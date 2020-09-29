@@ -1,10 +1,13 @@
 # RainbowWars AssemblyScript Contract
 
 ## Description
-This is the near contract for RawinbowWars. The RainbowWars project consists of three parts:
-- ethereum solidity contract
-- near assembly contract
-- vue frontend
+RainbowWars is a cross-chain game. Here is the [description][describe] and [demo][demo].
+
+This is the near contract for RainbowWars.
+The RainbowWars project consists of three parts:
+- [ethereum solidity contract][ethcontract]
+- [near assembly contract][nearcontract]
+- [vue frontend][frontend]
 
 > This repo was ported from [near-Counter][counter] demo. Only use the assembly contract part, please ignore the front-end part.
 
@@ -51,3 +54,8 @@ near deploy
 ```
 
 [counter]: https://github.com/near-examples/counter
+[demo]: https://peekpi.github.io/RainbowWars/dist
+[ethcontract]: https://github.com/peekpi/RainbowWars-Solidity
+[nearcontract]: https://github.com/peekpi/RainbowWars-Assembly
+[frontend]: https://github.com/peekpi/RainbowWars-Vue
+[describe]: https://github.com/peekpi/RainbowWars
