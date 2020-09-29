@@ -1,12 +1,12 @@
-# Rainbow-bridge-wars NearSide in AssemblyScript
+# RainbowWars AssemblyScript Contract
 
 ## Description
 This is the near contract for RawinbowWars. The RainbowWars project consists of three parts:
-- ethereum contract
-- near contract
-- frontend
+- ethereum solidity contract
+- near assembly contract
+- vue frontend
 
-> This repo is port from [near-Counter][counter] demo. Only use the assembly contract part, please ignore the front end part.
+> This repo was ported from [near-Counter][counter] demo. Only use the assembly contract part, please ignore the front-end part.
 
 ## Setup
 Install dependencies:
