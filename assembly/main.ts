@@ -95,7 +95,6 @@ export function transferFrom(from: string, to: string, tokens64: u64): boolean {
   setBalance(fromAddress, u256sub(fromAmount, tokens));
   setBalance(toAddress, getBalance(toAddress) + tokens); // must read again: if from == to
   setAllowance(fromAddress, msg.sender, u256sub(approvedAmount, tokens));
-  logging.log("transfer from: " + from + " to: " + to + " tokens: " + tokens64.toString());
   return true;
 }
 
@@ -169,7 +168,7 @@ function str2u256(str:string):u256 {
 //const attackEvent = util.stringToBytes()
 // 0x0xBC2D976E4A9331961e4478ae2b3d0BaD0C47393e
 const prover = new ProvethVerifier();
-const otherSideBridge:u256 = str2u256('0xdEa8B495fD07E1E2A6C8408Cb0049e02Ed0A61C1');
+const otherSideBridge:u256 = str2u256('0x2796cAaDC53f5d907332a2573F20DF23eA57C687');
 const attackSig = prover.keccak256(util.stringToBytes('etherAttack(address,uint256,uint256,uint256,bytes32)'));
 
 //const attackSig = u256.Zero;
@@ -198,8 +197,6 @@ function receiptVerify(rlpdata : Uint8Array) : u32 {
         const _difficult = u256.fromUint8ArrayBE(Data.subarray(0, 32));
         const _timestamp = u256.fromUint8ArrayBE(Data.subarray(32, 64));
         const beneficiary = u256.fromUint8ArrayBE(Data.subarray(64, 96));
-        logging.log("before:onAttackEvent");
-        logging.log(difficult.value.toUint8Array(true))
         onAttackEvent(topics[1], topics[2], _difficult, _timestamp, beneficiary);
       }
   }
@@ -267,11 +264,7 @@ export function ExecProof(blockHash: Uint8Array, roothash:Uint8Array, mptkey:Uin
   _require(!spentReceipt.contains(spentKey), "double spending!");
   spentReceipt.set(spentKey, true);
   const rlpdata = prover.MPTProof(receiptRootHashNum, mptkey, proof);
-  logging.log("receiptVerify")
-  logging.log(difficult.value.toUint8Array(true));
   const events = receiptVerify(rlpdata);
-  logging.log("receiptVerify-end")
-  logging.log(difficult.value.toUint8Array(true));
   _require(events > 0, "no valid event");
 }
 
@@ -283,21 +276,15 @@ function onAttackEvent(attacker: u256, bullet: u256, _difficult: u256, timestamp
 
   const abi = new SolAbi().append(attacker).append(bullet).append(otherDifficult.value).append(timestamp)
 
-  logging.log("attack-1")
-  logging.log(difficult.value.toUint8Array(true))
   const attackSeed = prover.keccak256(abi.encode());
   const sotreSeed = attackSeed&(~u256.fromU32(u32.MAX_VALUE))|block.number;
   attackSeedHistory.push(sotreSeed);
   attackAddressHistory.push(beneficiary);
-  logging.log("attack-2")
-  logging.log(difficult.value.toUint8Array(true))
   logging.log("onAttackEvent:" + attackIndex.value.toU32().toString() + "/" + attackSeedHistory.length.toString());
 }
 
 export function deal(): void {
   const index = attackIndex.value.toU32();
-  logging.log("deal begin:" + index.toString() + "/" + attackSeedHistory.length.toString());
-  logging.log(difficult.value.toUint8Array(true));
   if(index >= <u32>attackSeedHistory.length) return;
   
   const attackSeed = attackSeedHistory[index];
@@ -312,12 +299,9 @@ export function deal(): void {
 
   const attackValue = otherDifficult.value + finalAttackSeed;
   const defenValue = difficult.value + defenSeed;
-  logging.log("otherdiff:");
-  logging.log(otherDifficult.value.toUint8Array(true));
-  logging.log(difficult.value.toUint8Array(true));
-  logging.log(attackValue.toUint8Array(true));
-  logging.log(defenValue.toUint8Array(true));
   if (attackValue < defenValue) {
+    _mint(beneficiary, u256.fromU32(10000000));
+  }else{
     _mint(beneficiary, u256.fromU32(1000000));
   }
   if (difficult.value > finalAttackSeed) difficult.value = finalAttackSeed;

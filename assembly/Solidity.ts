@@ -103,7 +103,7 @@ export class SolAbi {
 
 }
 
-const commonPrefix = "/14::";
+const commonPrefix = "/16::";
 
 // only support T=>u256
 export class StorageMap<K, V> {
